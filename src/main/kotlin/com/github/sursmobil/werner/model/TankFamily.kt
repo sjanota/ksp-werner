@@ -12,6 +12,7 @@ data class TankFamily(
         val name: String,
         val tanks: List<Tank>
 ) {
+    val smallest: Tank? = tanks.minBy { it.vol }
     class Deserializer : StdDeserializer<TankFamily>(TankFamily::class.java) {
         override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): TankFamily {
             if(p!!.currentToken.isScalarValue) {

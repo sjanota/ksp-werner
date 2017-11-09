@@ -1,13 +1,19 @@
 package com.github.sursmobil.werner.model
 
+import java.util.*
+
 data class Tanks(
-        val counts: Map<Tank, Int>
+        val list: List<Tank>
 ) {
-    val mass: Double = counts.map { it.key.mass * it.value }.sum()
-    val fuelMass: Double = counts.map { it.key.fuelMass * it.value }.sum()
-    val vol: Double = counts.map { it.key.vol * it.value }.sum()
+    val mass: Double = list.sumByDouble { it.mass }
+    val fuelMass: Double = list.sumByDouble { it.fuelMass }
+    val vol: Double = list.sumByDouble { it.vol }
 
     companion object {
-        fun empty() = Tanks(emptyMap())
+        fun empty() = Tanks(emptyList())
+    }
+
+    fun add(tank: Tank, tankAmount: Int): Tanks {
+        return Tanks(list + Collections.nCopies(tankAmount, tank) )
     }
 }

@@ -12,7 +12,7 @@ import com.github.sursmobil.werner.model.*
 fun main(args: Array<String>) {
     val engines = load()
     val engine = engines.byName("Poodle")
-    val stage = Stage(engine, Payload(6.98, 0))
+    val stage = Stage(engine, Payload(13.23, 0))
     val calc = StageCalculator(stage)
-    println(calc.requiredFuel(Maneuver(Planet(), 1200.0, Env.VAC)))
+    println(calc.calculateFuelTanks(Maneuver(Planet(), 1200.0, Env.VAC)).stage.tanks.vol)
 }

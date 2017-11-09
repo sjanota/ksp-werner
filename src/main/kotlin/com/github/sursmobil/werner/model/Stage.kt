@@ -12,5 +12,6 @@ data class Stage(
     val fuelMass = tanks.fuelMass
     val fuelVol = tanks.vol
     val totalMass = rawMass + fuelMass
+    fun setTanks(tanks: Tanks): Stage = Stage(engine, payload, tanks)
 }
 
