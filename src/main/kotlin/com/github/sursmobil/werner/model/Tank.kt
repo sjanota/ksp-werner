@@ -6,5 +6,5 @@ data class Tank(
         val fuelType: FuelType
 ) {
     val mass: Double = fuelType.tankMass(this)
-    val fuelMass: Double = fuelType.fuelMass(vol)
+    val fuelMass = vol * fuelType.density
 }

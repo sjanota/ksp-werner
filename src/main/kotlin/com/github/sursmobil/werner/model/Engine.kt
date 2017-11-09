@@ -13,6 +13,6 @@ data class Engine(
         val fuelType: FuelType,
         val thrust: Thrust
 ) {
-    val fuelMassUsage = fuelType.fuelMass(fuelVolUsage)
+    val fuelMassUsage = fuelVolUsage * fuelType.density
 }
 
