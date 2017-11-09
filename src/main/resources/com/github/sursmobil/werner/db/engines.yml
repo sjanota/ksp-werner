@@ -1,0 +1,29 @@
+- name: Skipper
+  mass: 3.0
+  cost: 5300
+  fuelVolUsage: 18.642
+  tankFamily: Rockomax-ext
+  fuelType: liquid
+  thrust:
+    asl: 568.75
+    vac: 650.0
+
+- name: Poodle
+  mass: 1.75
+  cost: 1300
+  fuelVolUsage: 6.555
+  tankFamily: Rockomax-ext
+  fuelType: liquid
+  thrust:
+    asl: 64.286
+    vac: 250
+
+- name: Mainsail
+  mass: 6.0
+  cost: 13000
+  fuelVolUsage: 44.407
+  tankFamily: Rockomax-ext
+  fuelType: liquid
+  thrust:
+    asl: 1379.032
+    vac: 1500.0

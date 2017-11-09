@@ -1,0 +1,19 @@
+---
+- type: scaled
+  name: Rockomax
+  fuelType: liquid
+  factors: [1,2,4,8]
+  nominalVol: 360
+
+- type: static
+  name: small
+  tanks:
+  - name: Oscar
+    fuelType: liquid
+    vol: 18
+
+- type: combined
+  name:  Rockomax-ext
+  families:
+  - Rockomax
+  - small
