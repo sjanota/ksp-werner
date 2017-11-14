@@ -23,11 +23,18 @@ class StageCalculator(val stage: Stage) {
         val burnTime = burnTime(fuelVol)
         val fuelMass = fuelVol * stage.engine.fuelType.density
         val totalMass = stage.rawMass + fuelMass
-        val thrustForce = thrust(maneuver)
+        val thrust = thrust(maneuver)
         val fuelMassUsage = stage.engine.fuelMassUsage
 
         // dV = integrate thrust / (totalMass - t * fuelMassUsage) for t=0 to burnTime
-        return -thrustForce * Math.log(1 - burnTime * fuelMassUsage / totalMass) / fuelMassUsage
+        return -thrust * Math.log(1 - burnTime * fuelMassUsage / totalMass) / fuelMassUsage
+    }
+
+    fun burnTimeToDeltaV(maneuver: Maneuver): Double {
+        val c1 = - maneuver.dV * stage.engine.fuelMassUsage / thrust(maneuver)
+        val c2 = 1 - Math.exp(c1)
+
+        return c2 * stage.totalMass / stage.engine.fuelMassUsage
     }
 
     private fun requiredFuel(maneuver: Maneuver): Double {

@@ -15,13 +15,13 @@ fun main(args: Array<String>) {
     val engine = engines.byName("Poodle")
     val stage = Stage(engine, Payload(13.23, 0))
     val maneuver = Maneuver(Planet.KERBIN, 1200.0, Env.VAC, listOf(
-            Restrictions.minTWR(1.0),
-            Restrictions.maxBurnTime(90)
+            Restrictions.minTWR(1.12),
+            Restrictions.maxBurnTime(92)
     ))
     val calc = StageCalculator(stage)
             .calculateFuelTanks(maneuver)
     println(calc.stage.tanks.vol)
     println(calc.canExecute(maneuver))
     println(calc.currentTWR(maneuver))
-    println(calc.burnTime())
+    println(calc.burnTimeToDeltaV(maneuver))
 }

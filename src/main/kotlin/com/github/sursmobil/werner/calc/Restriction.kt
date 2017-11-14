@@ -9,8 +9,8 @@ typealias StageRestriction = (StageCalculator) -> Boolean
 typealias ManeuverRestriction = (Maneuver) -> StageRestriction
 
 object Restrictions {
-    fun maxBurnTime(seconds: Long): ManeuverRestriction = { _ -> { stage ->
-        stage.burnTime(stage.stage.fuelVol) <= seconds
+    fun maxBurnTime(seconds: Long): ManeuverRestriction = { m -> { stage ->
+        stage.burnTimeToDeltaV(m) <= seconds
     } }
 
     fun minTWR(minTWR: Double): ManeuverRestriction = { m -> { stage ->
