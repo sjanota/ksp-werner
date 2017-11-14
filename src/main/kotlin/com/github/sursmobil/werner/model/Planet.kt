@@ -1,5 +1,8 @@
 package com.github.sursmobil.werner.model
 
-data class Planet(
-        val gravity: Double
-)
+private const val G: Double = 9.81
+
+enum class Planet(val gravity: Double) {
+    KERBIN(G);
+
+}

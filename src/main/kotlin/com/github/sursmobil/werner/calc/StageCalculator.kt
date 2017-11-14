@@ -13,21 +13,18 @@ val <T> List<T>.head: T
     get() = first()
 
 class StageCalculator(val stage: Stage) {
-    fun burnTime(fuelVol: Double) = fuelVol / stage.engine.fuelVolUsage
-    private val fuelMassUsage = stage.engine.fuelMassUsage
-    private fun thrustForce(env: Env) = env.thrust(stage.engine.thrust)
+    private fun thrust(maneuver: Maneuver) = maneuver.env.thrust(stage.engine.thrust)
+    private fun weight(maneuver: Maneuver) = maneuver.planet.gravity * stage.totalMass
+    fun canExecute(maneuver: Maneuver) = maneuver.restrictions.all { it(this) }
+    fun currentTWR(maneuver: Maneuver): Double = thrust(maneuver) / weight(maneuver)
+    fun burnTime(fuelVol: Double = stage.fuelVol) = fuelVol / stage.engine.fuelVolUsage
 
-    fun thrust(maneuver: Maneuver) =
-            maneuver.env.thrust(stage.engine.thrust)
-
-    fun weight(maneuver: Maneuver) =
-            maneuver.planet.gravity * stage.totalMass
-
-    fun deltaVForFuelVol(env: Env, fuelVol: Double): Double {
+    fun deltaVForFuelVol(maneuver: Maneuver, fuelVol: Double): Double {
         val burnTime = burnTime(fuelVol)
         val fuelMass = fuelVol * stage.engine.fuelType.density
         val totalMass = stage.rawMass + fuelMass
-        val thrustForce = thrustForce(env)
+        val thrustForce = thrust(maneuver)
+        val fuelMassUsage = stage.engine.fuelMassUsage
 
         // dV = integrate thrust / (totalMass - t * fuelMassUsage) for t=0 to burnTime
         return -thrustForce * Math.log(1 - burnTime * fuelMassUsage / totalMass) / fuelMassUsage
@@ -61,8 +58,7 @@ class StageCalculator(val stage: Stage) {
         return fillTanksNoExceed(newFuelToFill, tolerance, newTanks, available.tail)
     }
 
-    private fun addSmallestTank(tanks: Tanks) =
-            tanks.add(stage.engine.tankFamily.smallest!!, 1)
+    private fun addSmallestTank(tanks: Tanks) = tanks.add(stage.engine.tankFamily.smallest!!, 1)
 
     fun calculateFuelTanks(maneuver: Maneuver, tolerance: Double = 0.1): StageCalculator {
         val requiredFuel = requiredFuel(maneuver)
