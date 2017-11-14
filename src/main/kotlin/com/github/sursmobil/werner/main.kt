@@ -14,5 +14,5 @@ fun main(args: Array<String>) {
     val engine = engines.byName("Poodle")
     val stage = Stage(engine, Payload(13.23, 0))
     val calc = StageCalculator(stage)
-    println(calc.calculateFuelTanks(Maneuver(Planet(), 1200.0, Env.VAC)).stage.tanks.vol)
+    println(calc.calculateFuelTanks(Maneuver(Planet(9.81), 1200.0, Env.VAC)).stage.tanks.vol)
 }

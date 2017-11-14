@@ -9,7 +9,7 @@ class Maneuver(
         val planet: Planet,
         val dV: Double,
         val env: Env,
-        genericRestrictions: Collection<ManeuverRestriction>
+        genericRestrictions: Collection<ManeuverRestriction> = emptyList()
 ) {
     val restrictions = genericRestrictions.map { it(this) }
 }
