@@ -19,8 +19,11 @@ interface FuelType {
     }
 
     object LiquidFuel : FuelType {
+        override fun cost(vol: Double): Int = (vol * (FUEL_COST + OXIDIZER_COST * OXIDIZER_TO_FUEL_RATIO)).toInt()
 
         private const val FUEL_DENSITY: Double = 0.005
+        private const val FUEL_COST: Double = 0.8
+        private const val OXIDIZER_COST: Double = 0.18
         private const val OXIDIZER_DENSITY: Double = 0.005
         private const val OXIDIZER_TO_FUEL_RATIO: Double = 11.0/9.0
         private const val TANK_MASS_FACTOR: Double = 8.0
@@ -32,6 +35,10 @@ interface FuelType {
     }
 
     object SolidFuel : FuelType {
+        override fun cost(vol: Double): Int {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
         private const val DENSITY: Double = 0.0075
 
         override val density: Double = DENSITY
@@ -42,12 +49,13 @@ interface FuelType {
     }
 
     object None : FuelType {
+        override fun cost(vol: Double): Int = 0
+
         override val density: Double = 0.0
 
-        override fun tankMass(tank: Tank): Double {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
+        override fun tankMass(tank: Tank): Double = 0.0
     }
+
+    fun cost(vol: Double): Int
 }
 

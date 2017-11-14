@@ -7,4 +7,10 @@ data class Tank(
 ) {
     val mass: Double = fuelType.tankMass(this)
     val fuelMass = vol * fuelType.density
+
+    companion object {
+        val Empty = Tank("Empty", 0.0, FuelType.None)
+    }
+
+    val cost: Int = fuelType.cost(vol)
 }

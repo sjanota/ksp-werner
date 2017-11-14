@@ -9,14 +9,26 @@ val <T> List<T>.tail: List<T>
 val <T> List<T>.head: T
     get() = first()
 
-class StageCalculator(val stage: Stage) {
+class StageCalculator(
+        val stage: Stage,
+        private val restrictions: Collection<StageRestriction> = emptyList()
+) {
     private fun thrust(maneuver: Maneuver) = maneuver.env.thrust(stage.engine.thrust)
     private fun weight(maneuver: Maneuver) = maneuver.planet.gravity * stage.totalMass
-    fun canExecute(maneuver: Maneuver) = maneuver.restrictions.all { it(this) }
-    fun currentTWR(maneuver: Maneuver): Double = thrust(maneuver) / weight(maneuver)
+    private fun canExecute(maneuver: Maneuver) = (restrictions + maneuverRestrictions(maneuver)).all { it(this) }
+
+    private fun maneuverRestrictions(maneuver: Maneuver): Collection<StageRestriction> =
+            maneuver.restrictions + haveEnoughFuel(maneuver)
+
+    private fun haveEnoughFuel(maneuver: Maneuver): StageRestriction = { stage ->
+        stage.deltaVForFuelVol(maneuver, stage.stage.fuelVol) >= maneuver.dV
+    }
+
     private fun burnTime(fuelVol: Double = stage.fuelVol) = fuelVol / stage.engine.fuelVolUsage
 
-    fun deltaVForFuelVol(maneuver: Maneuver, fuelVol: Double): Double {
+    fun currentTWR(maneuver: Maneuver): Double = thrust(maneuver) / weight(maneuver)
+
+    private fun deltaVForFuelVol(maneuver: Maneuver, fuelVol: Double): Double {
         val burnTime = burnTime(fuelVol)
         val fuelMass = fuelVol * stage.engine.fuelType.density
         val totalMass = stage.rawMass + fuelMass
@@ -45,7 +57,7 @@ class StageCalculator(val stage: Stage) {
         return c3 / (c4 - c5)
     }
 
-    private fun fillTanks(fuelToFill: Double, tolerance: Double): Tanks {
+    private fun fillTanks(fuelToFill: Double, tolerance: Double): Tanks? {
         val tanks = fillTanksNoExceed(fuelToFill, tolerance, Tanks.empty(), stage.engine.tankFamily.tanks)
         val hasEnough = fuelToFill <= tanks.vol
         return if (hasEnough) tanks else addSmallestTank(tanks)
@@ -62,15 +74,40 @@ class StageCalculator(val stage: Stage) {
         return fillTanksNoExceed(newFuelToFill, tolerance, newTanks, available.tail)
     }
 
-    private fun addSmallestTank(tanks: Tanks) = tanks.add(stage.engine.tankFamily.smallest!!, 1)
+    private fun addSmallestTank(tanks: Tanks): Tanks? {
+        return if (stage.engine.tankFamily.smallest != null) {
+            tanks.add(stage.engine.tankFamily.smallest, 1)
+        } else {
+            null
+        }
+    }
 
-    fun calculateFuelTanks(maneuver: Maneuver, tolerance: Double = 0.1): StageCalculator {
+    fun addManeuver(maneuver: Maneuver): List<StageCalculator> {
+        return if (canExecute(maneuver)) {
+            listOf(includeManeuver(maneuver))
+        } else {
+            val filled = calculateFuelTanks(maneuver)
+            if (filled.canExecute(maneuver)) {
+                listOf(filled.includeManeuver(maneuver))
+            } else {
+                stage.engine.morph()
+                        .map { Stage(it, stage.payload) }
+                        .map { StageCalculator(it, restrictions) }
+                        .flatMap { it.addManeuver(maneuver) }
+            }
+        }
+    }
+
+    private fun includeManeuver(maneuver: Maneuver): StageCalculator =
+            StageCalculator(stage, restrictions + maneuverRestrictions(maneuver))
+
+    private fun calculateFuelTanks(maneuver: Maneuver, tolerance: Double = 0.1): StageCalculator {
         val requiredFuel = requiredFuel(maneuver)
         if (stage.tanks.vol >= requiredFuel)
             return this
 
         val tanks = fillTanks(requiredFuel, tolerance)
-        return StageCalculator(stage.setTanks(tanks))
+        return if (tanks == null) this else StageCalculator(stage.setTanks(tanks))
                 .calculateFuelTanks(maneuver, tolerance)
     }
 }

@@ -5,7 +5,6 @@ import com.github.sursmobil.werner.calc.ManeuverRestriction
 import com.github.sursmobil.werner.calc.Restrictions.maxBurnTime
 import com.github.sursmobil.werner.calc.Restrictions.minTWR
 import com.github.sursmobil.werner.calc.StageCalculator
-import com.github.sursmobil.werner.db.load
 import com.github.sursmobil.werner.model.*
 import com.github.sursmobil.werner.model.Env.ASL
 import com.github.sursmobil.werner.model.Env.VAC
@@ -14,8 +13,6 @@ import com.github.sursmobil.werner.model.Planet.MINMUS
 
 class RocketBuilder private constructor() {
     companion object {
-        private val engines = load()
-
         fun rocket(f: RocketBuilder.() -> Unit) {
             val builder = RocketBuilder()
             builder.f()
@@ -25,10 +22,10 @@ class RocketBuilder private constructor() {
     fun stage(f: StageBuilder.() -> Unit) {
         val builder = StageBuilder()
         builder.f()
-        val initStage = Stage(engines.byName("Poodle"), Payload(builder.payload, 0))
+        val initStage = Stage(Engine.None, Payload(builder.payload, 0))
         val initCalc = StageCalculator(initStage)
-        val calc = builder.maneuvers.fold(initCalc) { acc, m -> acc.calculateFuelTanks(m) }
-        println(calc.stage.tanks.vol)
+        val calc = initCalc.addManeuver(builder.maneuvers[0])
+        println(calc.map { it.stage.cost })
     }
 
     class StageBuilder internal constructor() {
