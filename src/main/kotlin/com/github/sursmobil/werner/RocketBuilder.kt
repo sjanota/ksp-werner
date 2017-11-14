@@ -12,9 +12,6 @@ import com.github.sursmobil.werner.model.Env.VAC
 import com.github.sursmobil.werner.model.Planet.KERBIN
 import com.github.sursmobil.werner.model.Planet.MINMUS
 
-/**
- * Created by sj on 14/11/2017.
- */
 class RocketBuilder private constructor() {
     companion object {
         private val engines = load()

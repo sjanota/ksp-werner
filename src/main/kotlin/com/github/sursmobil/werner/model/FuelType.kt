@@ -20,10 +20,10 @@ interface FuelType {
 
     object LiquidFuel : FuelType {
 
-        const val FUEL_DENSITY: Double = 0.005
-        const val OXIDIZER_DENSITY: Double = 0.005
-        const val OXIDIZER_TO_FUEL_RATIO: Double = 11.0/9.0
-        const val TANK_MASS_FACTOR: Double = 8.0
+        private const val FUEL_DENSITY: Double = 0.005
+        private const val OXIDIZER_DENSITY: Double = 0.005
+        private const val OXIDIZER_TO_FUEL_RATIO: Double = 11.0/9.0
+        private const val TANK_MASS_FACTOR: Double = 8.0
 
         override fun tankMass(tank: Tank): Double =
                 tank.vol * density / TANK_MASS_FACTOR
@@ -32,7 +32,7 @@ interface FuelType {
     }
 
     object SolidFuel : FuelType {
-        const val DENSITY: Double = 0.0075
+        private const val DENSITY: Double = 0.0075
 
         override val density: Double = DENSITY
 

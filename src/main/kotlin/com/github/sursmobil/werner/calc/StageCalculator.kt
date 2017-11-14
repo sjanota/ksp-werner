@@ -2,9 +2,6 @@ package com.github.sursmobil.werner.calc
 
 import com.github.sursmobil.werner.model.*
 
-/**
- * Created by sj on 08/11/2017.
- */
 
 val <T> List<T>.tail: List<T>
     get() = drop(1)

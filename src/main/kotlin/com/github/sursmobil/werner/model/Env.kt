@@ -1,8 +1,5 @@
 package com.github.sursmobil.werner.model
 
-/**
- * Created by sj on 08/11/2017.
- */
 
 enum class Env {
     ASL {

@@ -40,7 +40,7 @@ data class TankFamily(
             return family
         }
 
-        class Scaled(name: String, val fuelType: FuelType, val factors: List<Double>, val nominalVol: Double) : Factory(name) {
+        class Scaled(name: String, private val fuelType: FuelType, private val factors: List<Double>, private val nominalVol: Double) : Factory(name) {
             override fun createTanks(): List<Tank> = factors.map { factor ->
                 val tankName = "$name-$factor"
                 val tankVol = nominalVol * factor
@@ -48,11 +48,11 @@ data class TankFamily(
             }
         }
 
-        class Static(name: String, val tanks: List<Tank>) : Factory(name) {
+        class Static(name: String, private val tanks: List<Tank>) : Factory(name) {
             override fun createTanks(): List<Tank> = tanks
         }
 
-        class Combined(name: String, val families: List<TankFamily>): Factory(name) {
+        class Combined(name: String, private val families: List<TankFamily>): Factory(name) {
             override fun createTanks(): List<Tank> = families.flatMap { it.tanks }
         }
     }
