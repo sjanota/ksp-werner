@@ -17,7 +17,7 @@ class StageCalculator(val stage: Stage) {
     private fun weight(maneuver: Maneuver) = maneuver.planet.gravity * stage.totalMass
     fun canExecute(maneuver: Maneuver) = maneuver.restrictions.all { it(this) }
     fun currentTWR(maneuver: Maneuver): Double = thrust(maneuver) / weight(maneuver)
-    fun burnTime(fuelVol: Double = stage.fuelVol) = fuelVol / stage.engine.fuelVolUsage
+    private fun burnTime(fuelVol: Double = stage.fuelVol) = fuelVol / stage.engine.fuelVolUsage
 
     fun deltaVForFuelVol(maneuver: Maneuver, fuelVol: Double): Double {
         val burnTime = burnTime(fuelVol)
