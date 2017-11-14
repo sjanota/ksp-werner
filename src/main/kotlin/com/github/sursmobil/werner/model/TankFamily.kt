@@ -66,5 +66,9 @@ data class TankFamily(
             registry.put(family.name, family)
         }
     }
+
+    companion object {
+        val None = TankFamily("None", emptyList())
+    }
 }
 

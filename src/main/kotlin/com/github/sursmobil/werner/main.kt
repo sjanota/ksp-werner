@@ -1,6 +1,9 @@
 package com.github.sursmobil.werner
 
+import com.github.sursmobil.werner.RocketBuilder.Companion.rocket
 import com.github.sursmobil.werner.calc.Restrictions
+import com.github.sursmobil.werner.calc.Restrictions.maxBurnTime
+import com.github.sursmobil.werner.calc.Restrictions.minTWR
 import com.github.sursmobil.werner.calc.StageCalculator
 import com.github.sursmobil.werner.db.load
 import com.github.sursmobil.werner.model.*
@@ -11,17 +14,16 @@ import com.github.sursmobil.werner.model.*
 
 
 fun main(args: Array<String>) {
-    val engines = load()
-    val engine = engines.byName("Poodle")
-    val stage = Stage(engine, Payload(13.23, 0))
-    val maneuver = Maneuver(Planet.KERBIN, 1200.0, Env.VAC, listOf(
-            Restrictions.minTWR(1.12),
-            Restrictions.maxBurnTime(92)
-    ))
-    val calc = StageCalculator(stage)
-            .calculateFuelTanks(maneuver)
-    println(calc.stage.tanks.vol)
-    println(calc.canExecute(maneuver))
-    println(calc.currentTWR(maneuver))
-    println(calc.burnTimeToDeltaV(maneuver))
+    rocket {
+        stage {
+            payload = 13.23
+
+            maneuver {
+                deltaV = 1200.0
+
+                restriction(minTWR(1.12))
+                restriction(maxBurnTime(92))
+            }
+        }
+    }
 }

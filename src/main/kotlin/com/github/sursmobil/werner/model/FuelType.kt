@@ -40,5 +40,14 @@ interface FuelType {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
+
+    object None : FuelType {
+        override val density: Double = 0.0
+
+        override fun tankMass(tank: Tank): Double {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+    }
 }
 

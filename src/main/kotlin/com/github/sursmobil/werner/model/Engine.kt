@@ -14,5 +14,10 @@ data class Engine(
         val thrust: Thrust
 ) {
     val fuelMassUsage = fuelVolUsage * fuelType.density
+
+    companion object {
+        val None = Engine("None", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.None, Thrust.None)
+    }
 }
+
 
