@@ -1,31 +1,30 @@
 package com.github.sursmobil.werner
 
-import com.github.sursmobil.werner.RocketBuilder.Companion.rocket
 import com.github.sursmobil.werner.calc.ManeuverRestriction
-import com.github.sursmobil.werner.calc.Restrictions.maxBurnTime
-import com.github.sursmobil.werner.calc.Restrictions.minTWR
 import com.github.sursmobil.werner.calc.StageCalculator
 import com.github.sursmobil.werner.model.*
-import com.github.sursmobil.werner.model.Env.ASL
 import com.github.sursmobil.werner.model.Env.VAC
 import com.github.sursmobil.werner.model.Planet.KERBIN
-import com.github.sursmobil.werner.model.Planet.MINMUS
 
 class RocketBuilder private constructor() {
+    private var stages: Collection<Stage> = listOf(Stage(Engine.None, Payload.create(0.0,0)))
+
     companion object {
-        fun rocket(f: RocketBuilder.() -> Unit) {
+        fun rocket(f: RocketBuilder.() -> Unit): Stage? {
             val builder = RocketBuilder()
             builder.f()
+            return builder.stages.minBy { it.cost }
         }
     }
 
     fun stage(f: StageBuilder.() -> Unit) {
         val builder = StageBuilder()
         builder.f()
-        val initStage = Stage(Engine.None, Payload(builder.payload, 0))
-        val initCalc = StageCalculator(initStage)
-        val calc = initCalc.addManeuver(builder.maneuvers[0])
-        println(calc.map { it.stage.cost })
+        stages = stages
+                .map { Stage(Engine.None, it + Payload.create(builder.payload, 0)) }
+                .flatMap { StageCalculator(it).addManeuver(builder.maneuvers[0]) }
+                .map { it.stage }
+        println(stages.map { it.cost })
     }
 
     class StageBuilder internal constructor() {
@@ -49,44 +48,11 @@ class RocketBuilder private constructor() {
                 restrictions.add(restriction)
             }
 
-            internal fun build() = Maneuver(planet, deltaV, env, restrictions.toList())
+            internal fun build() = if(deltaV > 0)
+                Maneuver(planet, deltaV, env, restrictions.toList())
+            else
+                throw Exception("Delta V must be specified for maneuver")
         }
     }
 }
 
-fun example() {
-    rocket {
-        stage {
-            payload = 6.23
-
-            maneuver {
-                planet = MINMUS
-                deltaV = 250.0
-
-                restriction(maxBurnTime(90))
-            }
-
-            maneuver {
-                planet = MINMUS
-                deltaV = 200.0
-
-                restriction(minTWR(1.5))
-            }
-        }
-        stage {
-            maneuver {
-                deltaV = 1200.0
-
-                restriction(maxBurnTime(120))
-            }
-        }
-        stage {
-            maneuver {
-                deltaV = 2500.0
-                env = ASL
-
-                restriction(minTWR(1.5))
-            }
-        }
-    }
-}
