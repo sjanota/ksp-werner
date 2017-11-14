@@ -13,12 +13,15 @@ val <T> List<T>.head: T
     get() = first()
 
 class StageCalculator(val stage: Stage) {
-    private fun burnTime(fuelVol: Double) = fuelVol / stage.engine.fuelVolUsage
+    fun burnTime(fuelVol: Double) = fuelVol / stage.engine.fuelVolUsage
     private val fuelMassUsage = stage.engine.fuelMassUsage
     private fun thrustForce(env: Env) = env.thrust(stage.engine.thrust)
 
-    private fun thrust(maneuver: Maneuver) =
+    fun thrust(maneuver: Maneuver) =
             maneuver.env.thrust(stage.engine.thrust)
+
+    fun weight(maneuver: Maneuver) =
+            maneuver.planet.gravity * stage.totalMass
 
     fun deltaVForFuelVol(env: Env, fuelVol: Double): Double {
         val burnTime = burnTime(fuelVol)

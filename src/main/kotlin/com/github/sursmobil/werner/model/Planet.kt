@@ -1,5 +1,5 @@
 package com.github.sursmobil.werner.model
 
-class Planet {
-
-}
+data class Planet(
+        val gravity: Double
+)
