@@ -10,8 +10,12 @@ interface Payload {
                 get() = mass
             override val cost: Int
                 get() = cost
+            override fun toString() = "Payload(mass=$mass, cost=$cost)"
+
         }
     }
 
     operator fun plus(other: Payload) = create(mass + other.mass, cost + other.cost)
+
+
 }

@@ -16,4 +16,5 @@ data class Tanks(
 
     fun add(tank: Tank, tankAmount: Int): Tanks = Tanks(list + Collections.nCopies(tankAmount, tank) )
     val cost: Int = list.sumBy { it.cost }
+    val rawCost: Int = list.sumBy { it.baseCost }
 }

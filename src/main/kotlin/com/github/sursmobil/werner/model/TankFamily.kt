@@ -13,6 +13,7 @@ data class TankFamily(
         val tanks: List<Tank>
 ) {
     val smallest: Tank? = tanks.minBy { it.vol }
+    val orderedTanks = tanks.sortedBy { -it.vol }
     class Deserializer : StdDeserializer<TankFamily>(TankFamily::class.java) {
         override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): TankFamily {
             if(p!!.currentToken.isScalarValue) {
@@ -40,11 +41,11 @@ data class TankFamily(
             return family
         }
 
-        class Scaled(name: String, private val fuelType: FuelType, private val factors: List<Double>, private val nominalVol: Double) : Factory(name) {
+        class Scaled(name: String, private val fuelType: FuelType, private val factors: Map<Double, Int>, private val nominalVol: Double) : Factory(name) {
             override fun createTanks(): List<Tank> = factors.map { factor ->
-                val tankName = "$name-$factor"
-                val tankVol = nominalVol * factor
-                Tank(tankName, tankVol, fuelType)
+                val tankName = "$name-${factor.key}"
+                val tankVol = nominalVol * factor.key
+                Tank(tankName, tankVol, factor.value, fuelType)
             }
         }
 

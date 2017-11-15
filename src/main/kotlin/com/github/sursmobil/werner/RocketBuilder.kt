@@ -1,34 +1,42 @@
 package com.github.sursmobil.werner
 
-import com.github.sursmobil.werner.calc.ManeuverRestriction
-import com.github.sursmobil.werner.calc.StageCalculator
 import com.github.sursmobil.werner.model.*
 import com.github.sursmobil.werner.model.Env.VAC
 import com.github.sursmobil.werner.model.Planet.KERBIN
 
 class RocketBuilder private constructor() {
-    private var stages: Collection<Stage> = listOf(Stage(Engine.None, Payload.create(0.0,0)))
+    private var rockets: Collection<Rocket> = listOf(Rocket())
 
     companion object {
-        fun rocket(f: RocketBuilder.() -> Unit): Stage? {
+        fun rocket(f: RocketBuilder.() -> Unit): Rocket? {
             val builder = RocketBuilder()
             builder.f()
-            return builder.stages.minBy { it.cost }
+            return builder.rockets.minBy { it.cost }
         }
     }
 
     fun stage(f: StageBuilder.() -> Unit) {
         val builder = StageBuilder()
         builder.f()
-        stages = stages
-                .map { Stage(Engine.None, it + Payload.create(builder.payload, 0)) }
-                .flatMap { StageCalculator(it).addManeuver(builder.maneuvers[0]) }
-                .map { it.stage }
-        println(stages.map { it.cost })
+        rockets = rockets
+                .flatMap { it.nextStages(builder.payload) {
+                    addManeuvers(it, builder.maneuvers)
+                } }
+    }
+
+    private fun addManeuvers(stage: StageCalculator, maneuvers: List<Maneuver>): List<StageCalculator> {
+        return if (maneuvers.isEmpty()) {
+            listOf(stage)
+        } else {
+            println(maneuvers.head)
+            val added = stage.addManeuver(maneuvers.head)
+            println(added.map { it.stage })
+            added.flatMap { addManeuvers(it, maneuvers.tail) }
+        }
     }
 
     class StageBuilder internal constructor() {
-        var payload: Double = 0.0
+        var payload: Payload = Payload.create(0.0, 0)
         internal val maneuvers = mutableListOf<Maneuver>()
 
         fun maneuver(f: ManeuverBuilder.() -> Unit) {

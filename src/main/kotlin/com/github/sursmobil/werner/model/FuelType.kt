@@ -32,6 +32,8 @@ interface FuelType {
                 tank.vol * density / TANK_MASS_FACTOR
 
         override val density: Double = FUEL_DENSITY + OXIDIZER_DENSITY * OXIDIZER_TO_FUEL_RATIO
+
+        override fun toString() = "Liquid"
     }
 
     object SolidFuel : FuelType {
@@ -46,6 +48,9 @@ interface FuelType {
         override fun tankMass(tank: Tank): Double {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
+
+        override fun toString() = "Solid"
+
     }
 
     object None : FuelType {
@@ -54,6 +59,8 @@ interface FuelType {
         override val density: Double = 0.0
 
         override fun tankMass(tank: Tank): Double = 0.0
+
+        override fun toString() = "None"
     }
 
     fun cost(vol: Double): Int

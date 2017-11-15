@@ -16,6 +16,8 @@ abstract class Engine(
     val fuelMassUsage = fuelVolUsage * fuelType.density
 
     abstract fun morph(): List<Engine>
+    override fun toString(): String =
+            "Engine(name='$name')"
 
     object None : Engine("None", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.None, Thrust.None) {
         override fun morph(): List<Engine> = Registry.engines
@@ -37,6 +39,8 @@ abstract class Engine(
 
         fun byName(name: String) = indexByName[name] ?: throw Exception("Engine '$name' not found")
     }
+
+
 }
 
 

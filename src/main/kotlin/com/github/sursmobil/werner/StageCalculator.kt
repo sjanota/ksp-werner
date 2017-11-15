@@ -1,17 +1,10 @@
-package com.github.sursmobil.werner.calc
+package com.github.sursmobil.werner
 
 import com.github.sursmobil.werner.model.*
 
-
-val <T> List<T>.tail: List<T>
-    get() = drop(1)
-
-val <T> List<T>.head: T
-    get() = first()
-
 class StageCalculator(
         val stage: Stage,
-        private val restrictions: Collection<StageRestriction> = emptyList()
+        val restrictions: Collection<StageRestriction> = emptyList()
 ) {
     private fun thrust(maneuver: Maneuver) = maneuver.env.thrust(stage.engine.thrust)
     private fun weight(maneuver: Maneuver) = maneuver.planet.gravity * stage.totalMass
@@ -58,7 +51,7 @@ class StageCalculator(
     }
 
     private fun fillTanks(fuelToFill: Double, tolerance: Double): Tanks? {
-        val tanks = fillTanksNoExceed(fuelToFill, tolerance, Tanks.empty(), stage.engine.tankFamily.tanks)
+        val tanks = fillTanksNoExceed(fuelToFill, tolerance, Tanks.empty(), stage.engine.tankFamily.orderedTanks)
         val hasEnough = fuelToFill <= tanks.vol
         return if (hasEnough) tanks else addSmallestTank(tanks)
     }
@@ -101,9 +94,9 @@ class StageCalculator(
     private fun includeManeuver(maneuver: Maneuver): StageCalculator =
             StageCalculator(stage, restrictions + maneuverRestrictions(maneuver))
 
-    private fun calculateFuelTanks(maneuver: Maneuver, tolerance: Double = 0.1): StageCalculator {
+    private fun calculateFuelTanks(maneuver: Maneuver, tolerance: Double = 0.1, maxFuel: Double = 10000000.0): StageCalculator {
         val requiredFuel = requiredFuel(maneuver)
-        if (stage.tanks.vol >= requiredFuel)
+        if (stage.tanks.vol >= requiredFuel || requiredFuel > maxFuel)
             return this
 
         val tanks = fillTanks(requiredFuel, tolerance)

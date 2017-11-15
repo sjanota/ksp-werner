@@ -1,4 +1,4 @@
-package com.github.sursmobil.werner.calc
+package com.github.sursmobil.werner
 
 import com.github.sursmobil.werner.model.Maneuver
 
