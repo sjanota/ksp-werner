@@ -8,7 +8,7 @@ abstract class Engine(
         val cost: Int,
         val mass: Double,
         val fuelVolUsage: Double,
-        val includedFuel: Double = 0.0,
+        val includedFuel: Double,
         val tankFamily: TankFamily,
         val fuelType: FuelType,
         val thrust: Thrust
@@ -23,7 +23,7 @@ abstract class Engine(
         override fun morph(): List<Engine> = Registry.engines
     }
 
-    class BaseEngine(name: String, cost: Int, mass: Double, fuelVolUsage: Double, includedFuel: Double, tankFamily: TankFamily, fuelType: FuelType, thrust: Thrust) : Engine(name, cost, mass, fuelVolUsage, includedFuel, tankFamily, fuelType, thrust) {
+    class BaseEngine(name: String, cost: Int, mass: Double, fuelVolUsage: Double, includedFuel: Double = 0.0, tankFamily: TankFamily, fuelType: FuelType, thrust: Thrust) : Engine(name, cost, mass, fuelVolUsage, includedFuel, tankFamily, fuelType, thrust) {
         init {
             Registry.engines.add(this)
         }
@@ -40,6 +40,7 @@ abstract class Engine(
         fun byName(name: String) = indexByName[name] ?: throw Exception("Engine '$name' not found")
     }
 
+    val fuelMass: Double = includedFuel * fuelType.density
 
 }
 

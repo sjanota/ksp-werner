@@ -28,9 +28,7 @@ class RocketBuilder private constructor() {
         return if (maneuvers.isEmpty()) {
             listOf(stage)
         } else {
-            println(maneuvers.head)
             val added = stage.addManeuver(maneuvers.head)
-            println(added.map { it.stage })
             added.flatMap { addManeuvers(it, maneuvers.tail) }
         }
     }

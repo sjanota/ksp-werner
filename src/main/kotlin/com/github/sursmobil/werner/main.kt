@@ -18,7 +18,6 @@ fun main(args: Array<String>) {
             maneuver {
                 deltaV = 1200.0
 
-                restriction(minTWR(1.0))
                 restriction(maxBurnTime(100))
             }
 

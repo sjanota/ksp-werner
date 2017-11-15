@@ -7,9 +7,9 @@ data class Stage(
 ) : Payload {
     override val mass: Double
         get() = totalMass
-    val rawMass = engine.mass + payload.mass + tanks.mass
-    private val fuelMass = tanks.fuelMass
-    val fuelVol = tanks.vol
+    val rawMass = engine.mass + payload.mass + tanks.mass - engine.fuelMass
+    val fuelMass = tanks.fuelMass + engine.fuelMass
+    val fuelVol = tanks.vol + engine.includedFuel
     val totalMass = rawMass + fuelMass
     fun setTanks(tanks: Tanks): Stage = Stage(engine, payload, tanks)
 

@@ -43,8 +43,8 @@ data class TankFamily(
 
         class Scaled(name: String, private val fuelType: FuelType, private val factors: Map<Double, Int>, private val nominalVol: Double) : Factory(name) {
             override fun createTanks(): List<Tank> = factors.map { factor ->
-                val tankName = "$name-${factor.key}"
                 val tankVol = nominalVol * factor.key
+                val tankName = "$name-$tankVol"
                 Tank(tankName, tankVol, factor.value, fuelType)
             }
         }

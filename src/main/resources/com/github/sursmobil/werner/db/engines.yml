@@ -27,3 +27,14 @@
   thrust:
     asl: 1379.032
     vac: 1500.0
+
+- name: Twin-boar
+  mass: 42.5
+  cost: 17000
+  fuelVolUsage: 61.183
+  tankFamily: Rockomax-ext
+  fuelType: liquid
+  includedFuel: 2880
+  thrust:
+    asl: 1866.667
+    vac: 2000
