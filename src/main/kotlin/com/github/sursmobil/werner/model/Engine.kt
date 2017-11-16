@@ -2,7 +2,7 @@ package com.github.sursmobil.werner.model
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
-@JsonDeserialize(`as` = Engine.BaseEngine::class)
+@JsonDeserialize(`as` = BaseEngine::class)
 abstract class Engine(
         private val name: String,
         val cost: Int,
@@ -11,7 +11,8 @@ abstract class Engine(
         val includedFuel: Double,
         val tankFamily: TankFamily,
         val fuelType: FuelType,
-        val thrust: Thrust
+        val thrust: Thrust,
+        val size: Double
 ) {
     val fuelMassUsage = fuelVolUsage * fuelType.density
 
@@ -19,16 +20,8 @@ abstract class Engine(
     override fun toString(): String =
             "Engine(name='$name')"
 
-    object None : Engine("None", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.None, Thrust.None) {
+    object None : Engine("None", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.None, Thrust.None, 0.0) {
         override fun morph(): List<Engine> = Registry.engines
-    }
-
-    class BaseEngine(name: String, cost: Int, mass: Double, fuelVolUsage: Double, includedFuel: Double = 0.0, tankFamily: TankFamily, fuelType: FuelType, thrust: Thrust) : Engine(name, cost, mass, fuelVolUsage, includedFuel, tankFamily, fuelType, thrust) {
-        init {
-            Registry.engines.add(this)
-        }
-
-        override fun morph(): List<Engine> = emptyList()
     }
 
     object Registry {
@@ -37,6 +30,14 @@ abstract class Engine(
     }
 
     val fuelMass: Double = includedFuel * fuelType.density
+}
+
+class BaseEngine(name: String, cost: Int, mass: Double, fuelVolUsage: Double, includedFuel: Double = 0.0, tankFamily: TankFamily, fuelType: FuelType, thrust: Thrust, size: Double) : Engine(name, cost, mass, fuelVolUsage, includedFuel, tankFamily, fuelType, thrust, size) {
+    init {
+        Registry.engines.add(this)
+    }
+
+    override fun morph(): List<Engine> = emptyList()
 }
 
 

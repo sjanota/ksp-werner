@@ -33,7 +33,7 @@ private class Deserializer : StdDeserializer<TankFamily>(TankFamily::class.java)
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
-        JsonSubTypes.Type(value = Factory.Scaled::class, name = "scaled"),
+//        JsonSubTypes.Type(value = Factory.Scaled::class, name = "scaled"),
         JsonSubTypes.Type(value = Factory.Static::class, name = "static"),
         JsonSubTypes.Type(value = Factory.Combined::class, name = "combined")
 )
@@ -47,13 +47,13 @@ private abstract class Factory(val name: String) {
         return family
     }
 
-    class Scaled(name: String, private val fuelType: FuelType, private val factors: Map<Double, Int>, private val nominalVol: Double) : Factory(name) {
-        override fun createTanks(): List<Tank> = factors.map { factor ->
-            val tankVol = nominalVol * factor.key
-            val tankName = "$name-$tankVol"
-            Tank(tankName, tankVol, factor.value, fuelType)
-        }
-    }
+//    class Scaled(name: String, private val fuelType: FuelType, private val factors: Map<Double, Int>, private val nominalVol: Double) : Factory(name) {
+//        override fun createTanks(): List<Tank> = factors.map { factor ->
+//            val tankVol = nominalVol * factor.key
+//            val tankName = "$name-$tankVol"
+//            Tank(tankName, tankVol, factor.value, fuelType, mount)
+//        }
+//    }
 
     class Static(name: String, private val tanks: List<Tank>) : Factory(name) {
         override fun createTanks(): List<Tank> = tanks
@@ -73,6 +73,3 @@ private object Registry {
         registry.put(family.name, family)
     }
 }
-
-
-

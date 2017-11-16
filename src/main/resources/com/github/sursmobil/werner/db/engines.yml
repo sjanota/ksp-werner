@@ -4,6 +4,7 @@
   fuelVolUsage: 18.642
   tankFamily: Rockomax-ext
   fuelType: liquid
+  size: 2.5
   thrust:
     asl: 568.75
     vac: 650.0
@@ -14,6 +15,7 @@
   fuelVolUsage: 6.555
   tankFamily: Rockomax-ext
   fuelType: liquid
+  size: 2.5
   thrust:
     asl: 64.286
     vac: 250
@@ -24,6 +26,7 @@
   fuelVolUsage: 44.407
   tankFamily: Rockomax-ext
   fuelType: liquid
+  size: 2.5
   thrust:
     asl: 1379.032
     vac: 1500.0
@@ -35,6 +38,7 @@
   tankFamily: Rockomax-ext
   fuelType: liquid
   includedFuel: 2880
+  size: 2.5
   thrust:
     asl: 1866.667
     vac: 2000
