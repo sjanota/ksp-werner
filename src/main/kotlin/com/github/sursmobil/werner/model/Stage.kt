@@ -8,6 +8,7 @@ class Stage(
     val rawMass = engine.mass + payload.mass + tanks.mass - engine.fuelMass
     val fuelMass = tanks.fuelMass + engine.fuelMass
     val fuelVol = tanks.vol + engine.includedFuel
+    val burnTime = fuelVol / engine.fuelVolUsage
 
     override val mass: Double = rawMass + fuelMass
     override val cost: Int = engine.cost + payload.cost + tanks.cost

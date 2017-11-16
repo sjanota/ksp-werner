@@ -11,6 +11,6 @@ object Restrictions {
     } }
 
     fun minTWR(minTWR: Double): ManeuverRestriction = { m -> { stage ->
-        stage.currentTWR(m) >= minTWR
+        m.twr(stage.stage) >= minTWR
     } }
 }

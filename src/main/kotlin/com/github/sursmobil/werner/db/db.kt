@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.sursmobil.werner.model.Engine
 import com.github.sursmobil.werner.model.TankFamily
 
-fun load() {
+fun loadDB() {
     loadTankFamilies()
     loadEngines()
 }

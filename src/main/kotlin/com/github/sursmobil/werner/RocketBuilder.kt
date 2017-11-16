@@ -1,5 +1,6 @@
 package com.github.sursmobil.werner
 
+import com.github.sursmobil.werner.db.loadDB
 import com.github.sursmobil.werner.model.*
 import com.github.sursmobil.werner.model.Env.VAC
 import com.github.sursmobil.werner.model.Planet.KERBIN
@@ -8,6 +9,9 @@ class RocketBuilder private constructor() {
     private var rockets: Collection<Rocket> = listOf(Rocket())
 
     companion object {
+        init {
+            loadDB()
+        }
         fun rocket(f: RocketBuilder.() -> Unit): Rocket? {
             val builder = RocketBuilder()
             builder.f()
