@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 @JsonDeserialize(`as` = Engine.BaseEngine::class)
 abstract class Engine(
-        val name: String,
+        private val name: String,
         val cost: Int,
         val mass: Double,
         val fuelVolUsage: Double,
@@ -34,10 +34,6 @@ abstract class Engine(
     object Registry {
         internal val engines = mutableListOf<Engine>()
 
-        private val indexByName
-            get() = engines.associateBy { it.name }
-
-        fun byName(name: String) = indexByName[name] ?: throw Exception("Engine '$name' not found")
     }
 
     val fuelMass: Double = includedFuel * fuelType.density

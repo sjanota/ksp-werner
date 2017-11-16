@@ -45,7 +45,7 @@ class RocketBuilder private constructor() {
         }
 
         class ManeuverBuilder internal constructor() {
-            var planet: Planet = KERBIN
+            private var planet: Planet = KERBIN
             var deltaV: Double = -1.0
             var env: Env = VAC
             private val restrictions = mutableListOf<ManeuverRestriction>()

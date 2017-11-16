@@ -1,6 +1,9 @@
 package com.github.sursmobil.werner
 
-import com.github.sursmobil.werner.model.*
+import com.github.sursmobil.werner.model.Maneuver
+import com.github.sursmobil.werner.model.Stage
+import com.github.sursmobil.werner.model.Tank
+import com.github.sursmobil.werner.model.Tanks
 
 class StageCalculator(
         val stage: Stage,
