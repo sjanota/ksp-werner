@@ -2,7 +2,7 @@ package com.github.sursmobil.werner.model
 
 import com.github.sursmobil.werner.StageCalculator
 
-class Rocket(private val stack: List<StageCalculator> = listOf(StageCalculator(Stage.None))) {
+class Rocket(private val stack: List<StageCalculator> = listOf(StageCalculator(Stage.Empty))) {
     fun nextStages(payload: Payload, f: (StageCalculator) -> List<StageCalculator>): List<Rocket> {
         val nextStage = Stage(Engine.None, stack.last().stage + payload)
         val next = f(StageCalculator(nextStage, stack.last().restrictions))

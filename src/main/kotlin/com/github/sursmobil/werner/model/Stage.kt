@@ -1,25 +1,23 @@
 package com.github.sursmobil.werner.model
 
-data class Stage(
+class Stage(
         val engine: Engine,
         val payload: Payload,
-        private val tanks: Tanks = Tanks.empty()
-) : Payload {
-    override val mass: Double
-        get() = totalMass
+        private val tanks: Tanks = Tanks.Empty
+) : Payload, MassWithThrust {
     val rawMass = engine.mass + payload.mass + tanks.mass - engine.fuelMass
     val fuelMass = tanks.fuelMass + engine.fuelMass
     val fuelVol = tanks.vol + engine.includedFuel
-    val totalMass = rawMass + fuelMass
-    fun setTanks(tanks: Tanks): Stage = Stage(engine, payload, tanks)
 
+    override val mass: Double = rawMass + fuelMass
+    override val cost: Int = engine.cost + payload.cost + tanks.cost
+    override val thrust: Thrust = engine.thrust
     override fun toString(): String = "Stage(engine=$engine, payload=$payload, tanks=${tanks.counts}, vol=$fuelVol, cost=$cost)"
 
-    override val cost: Int = engine.cost + payload.cost + tanks.cost
+    fun setTanks(tanks: Tanks): Stage = Stage(engine, payload, tanks)
 
     companion object {
-        val None = Stage(Engine.None, Payload.create(0.0, 0))
+        val Empty = Stage(Engine.None, Payload.Empty)
     }
-
 }
 

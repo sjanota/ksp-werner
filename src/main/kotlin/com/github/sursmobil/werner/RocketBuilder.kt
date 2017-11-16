@@ -54,10 +54,13 @@ class RocketBuilder private constructor() {
                 restrictions.add(restriction)
             }
 
-            internal fun build() = if(deltaV > 0)
-                Maneuver(planet, deltaV, env, restrictions.toList())
-            else
-                throw Exception("Delta V must be specified for maneuver")
+            internal fun build(): Maneuver {
+                return if(deltaV > 0) {
+                    Maneuver(planet, deltaV, env, restrictions.toList())
+                } else {
+                    throw Exception("Delta V must be specified for maneuver")
+                }
+            }
         }
     }
 }

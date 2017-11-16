@@ -37,7 +37,6 @@ abstract class Engine(
     }
 
     val fuelMass: Double = includedFuel * fuelType.density
-
 }
 
 
