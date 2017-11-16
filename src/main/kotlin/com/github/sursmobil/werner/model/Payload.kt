@@ -1,7 +1,6 @@
 package com.github.sursmobil.werner.model
 
-interface Payload {
-    val mass: Double
+interface Payload: Mass {
     val cost: Int
 
     operator fun plus(other: Payload) = create(mass + other.mass, cost + other.cost)

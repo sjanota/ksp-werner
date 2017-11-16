@@ -28,17 +28,17 @@ class RocketBuilder private constructor() {
                 } }
     }
 
-    private fun addManeuvers(stage: StageCalculator, maneuvers: List<Maneuver>): List<StageCalculator> {
+    private fun addManeuvers(stage: Stage, maneuvers: List<Maneuver>): List<Stage> {
         return if (maneuvers.isEmpty()) {
             listOf(stage)
         } else {
-            val added = stage.addManeuver(maneuvers.head)
+            val added = StageCalculator(stage).addManeuver(maneuvers.head)
             added.flatMap { addManeuvers(it, maneuvers.tail) }
         }
     }
 
     class StageBuilder internal constructor() {
-        var payload: Payload = Payload.create(0.0, 0)
+        var payload: Payload = Payload.create(mass = 0.0, cost = 0)
         internal val maneuvers = mutableListOf<Maneuver>()
 
         fun maneuver(f: ManeuverBuilder.() -> Unit) {

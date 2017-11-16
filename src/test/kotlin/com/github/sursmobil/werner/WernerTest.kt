@@ -45,11 +45,13 @@ object Werner: Spek({
 
 
             it("should have last stage worth 48310"){
-                assertEquals(result!!.stages.last().cost, 48310)
+                val stage = result!!.stages.last()
+                assertEquals(48310, stage.cost)
             }
 
             it("should have middle stage worth 19450") {
-                assertEquals(result!!.stages[result.stages.size-2].cost, 19450)
+                val stage = result!!.stages[result.stages.size-2]
+                assertEquals(19450, stage.cost)
             }
         }
     }
