@@ -12,4 +12,12 @@ interface WithThrust {
     val thrust: Thrust
 }
 
+interface MountSurface {
+    val size: Double
+}
+
+interface Mountable {
+    fun canBeMounted(surface: MountSurface): Boolean
+}
+
 interface MassWithThrust: Mass, WithThrust

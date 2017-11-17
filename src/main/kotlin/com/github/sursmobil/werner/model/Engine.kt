@@ -12,8 +12,8 @@ abstract class Engine(
         val tankFamily: TankFamily,
         val fuelType: FuelType,
         val thrust: Thrust,
-        val size: Double
-) {
+        override val size: Double
+) : MountSurface {
     val fuelMassUsage = fuelVolUsage * fuelType.density
 
     abstract fun morph(): List<Engine>

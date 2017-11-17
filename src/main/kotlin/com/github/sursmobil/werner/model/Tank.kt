@@ -14,11 +14,10 @@ data class Tank(
         val vol: Double,
         val cost: Int,
         val fuelType: FuelType,
-        val mount: TankMount
-) {
+        private val mount: TankMount
+) : Mountable by mount {
     val mass: Double = fuelType.tankMass(this)
     val fuelMass = vol * fuelType.density
-
 }
 
 class TanksRegistry(
@@ -72,14 +71,11 @@ class TanksRegistry(
         JsonSubTypes.Type(value = RadialMount::class, name = "radial"),
         JsonSubTypes.Type(value = MainMount::class, name = "main")
 )
-interface TankMount {
-    fun canBeAttached(engine: Engine): Boolean
-}
-
+interface TankMount : Mountable
 class RadialMount : TankMount {
-    override fun canBeAttached(engine: Engine): Boolean = true
+    override fun canBeMounted(surface: MountSurface): Boolean = true
 }
 
 class MainMount(val size: Double) : TankMount {
-    override fun canBeAttached(engine: Engine): Boolean = size >= engine.size
+    override fun canBeMounted(surface: MountSurface): Boolean = size >= surface.size
 }
