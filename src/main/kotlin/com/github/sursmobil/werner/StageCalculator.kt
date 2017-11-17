@@ -25,9 +25,8 @@ private class ManeuverExecutor(
 ) {
     private val executed = stage.addManeuver(maneuver)
     private val thrust = maneuver.env.thrust(executed)
-    private val onlyMountableTanks = tanksReg.onlyMountable(stage.engine)
+    private val onlyMountableTanks = tanksReg.onlyMountable(stage.engine).onlySameFuel(stage.engine)
     private val orderedTanks = onlyMountableTanks.volDescending()
-    private val smallestTank = onlyMountableTanks.volSmallest()
 
     private val requiredFuel: Double
         get() {
@@ -75,7 +74,7 @@ private class ManeuverExecutor(
 
     private fun addSmallestTank(tanks: Tanks): Tanks? {
         return if (onlyMountableTanks.size != 0) {
-            tanks.add(smallestTank, 1)
+            tanks.add(onlyMountableTanks.volSmallest(), 1)
         } else {
             null
         }

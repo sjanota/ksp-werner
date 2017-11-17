@@ -1,8 +1,8 @@
+engines:
 - name: Skipper
   mass: 3.0
   cost: 5300
   fuelVolUsage: 18.642
-  tankFamily: Rockomax-ext
   fuelType: liquid
   size: 2.5
   thrust:
@@ -13,7 +13,6 @@
   mass: 1.75
   cost: 1300
   fuelVolUsage: 6.555
-  tankFamily: Rockomax-ext
   fuelType: liquid
   size: 2.5
   thrust:
@@ -24,7 +23,6 @@
   mass: 6.0
   cost: 13000
   fuelVolUsage: 44.407
-  tankFamily: Rockomax-ext
   fuelType: liquid
   size: 2.5
   thrust:
@@ -35,7 +33,6 @@
   mass: 42.5
   cost: 17000
   fuelVolUsage: 61.183
-  tankFamily: Rockomax-ext
   fuelType: liquid
   includedFuel: 2880
   size: 2.5
