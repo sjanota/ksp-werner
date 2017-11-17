@@ -1,5 +1,6 @@
 package com.github.sursmobil.werner.model
 
+import com.github.sursmobil.werner.model.tanks.Tank
 import java.util.*
 
 data class Tanks(

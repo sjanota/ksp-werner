@@ -1,6 +1,7 @@
 package com.github.sursmobil.werner
 
 import com.github.sursmobil.werner.model.*
+import com.github.sursmobil.werner.model.tanks.Tank
 
 class StageCalculator (
         private val stage: Stage
