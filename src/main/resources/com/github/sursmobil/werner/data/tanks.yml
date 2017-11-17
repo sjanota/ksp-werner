@@ -1,4 +1,3 @@
-tanks:
 - type: scaled
   name: Rockomax
   fuelType: liquid

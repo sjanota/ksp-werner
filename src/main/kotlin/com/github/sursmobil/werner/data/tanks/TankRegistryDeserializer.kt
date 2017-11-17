@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 
-internal class TankListDeserializer : JsonDeserializer<List<Tank>>() {
-    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): List<Tank> {
-        return p!!.readValueAs<List<TankFactory>>(object : TypeReference<List<TankFactory>>() {})
+internal class TankRegistryDeserializer : JsonDeserializer<BaseTanksRegistry>() {
+    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): BaseTanksRegistry {
+        val tanks = p!!.readValueAs<List<TankFactory>>(object : TypeReference<List<TankFactory>>() {})
                 .asSequence().toList()
                 .flatMap { it.createTanks() }
+                .toSet()
+        return BaseTanksRegistry(tanks)
     }
 }

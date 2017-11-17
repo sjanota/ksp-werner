@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.sursmobil.werner.data.tanks.BaseTanksRegistry
+import com.github.sursmobil.werner.data.tanks.TanksRegistry
 import com.github.sursmobil.werner.head
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -26,7 +27,6 @@ object TankFamilyTests : Spek({
 
         on("parsing YAML with scaled tanks") {
             val yaml = """
-            tanks:
             - type: scaled
               name: Rockomax
               fuelType: liquid
@@ -36,19 +36,19 @@ object TankFamilyTests : Spek({
                 type: main
                 size: 2.5
             """.trimIndent()
-            val tanks = mapper.readValue<BaseTanksRegistry>(yaml, object : TypeReference<BaseTanksRegistry>() {})
+            val tanks = mapper.readValue<TanksRegistry>(yaml, object : TypeReference<TanksRegistry>() {})
 
             it("there are as many tanks as factors") {
-                assertEquals(4, tanks.tanks.size)
+                assertEquals(4, tanks.size)
             }
             it("tank costs should be included") {
-                assertEquals(listOf(800, 1550, 3000, 5750), tanks.tanks.map { it.cost })
+                assertEquals(listOf(800, 1550, 3000, 5750), tanks.map { it.cost })
             }
             it("tank volumes are multiplications of nominal volume") {
-                assertEquals(listOf(360.0, 720.0, 1440.0, 2880.0), tanks.tanks.map { it.vol })
+                assertEquals(listOf(360.0, 720.0, 1440.0, 2880.0), tanks.map { it.vol })
             }
             it("every tank has liquid fuel") {
-                assertTrue(tanks.tanks.all { it.fuelType == FuelType.LiquidFuel })
+                assertTrue(tanks.all { it.fuelType == FuelType.LiquidFuel })
             }
             it("every tank can be mounted to 2.5 engine") {
                 assertEquals(4, tanks.onlyMountable(engineRockomax).size)
@@ -60,7 +60,6 @@ object TankFamilyTests : Spek({
 
         on("parsing YAML with static tank") {
             val yaml = """
-            tanks:
             - type: static
               name: Oscar
               fuelType: liquid
@@ -69,22 +68,22 @@ object TankFamilyTests : Spek({
               mount:
                 type: radial
             """.trimIndent()
-            val tanks = mapper.readValue<BaseTanksRegistry>(yaml, object : TypeReference<BaseTanksRegistry>() {})
+            val tanks = mapper.readValue<TanksRegistry>(yaml, object : TypeReference<TanksRegistry>() {})
 
             it("there is one tank") {
-                assertEquals(1, tanks.tanks.size)
+                assertEquals(1, tanks.size)
             }
             it("cost of the tank is 70") {
-                assertEquals(70, tanks.tanks.head.cost)
+                assertEquals(70, tanks.first().cost)
             }
             it("volume of the tank is 18") {
-                assertEquals(18.0, tanks.tanks.head.vol)
+                assertEquals(18.0, tanks.first().vol)
             }
             it("tank uses liquid fuel") {
-                assertEquals(FuelType.LiquidFuel, tanks.tanks.head.fuelType)
+                assertEquals(FuelType.LiquidFuel, tanks.first().fuelType)
             }
             it("tank name is 'Oscar") {
-                assertEquals("Oscar", tanks.tanks.head.name)
+                assertEquals("Oscar", tanks.first().name)
             }
             it("every tank can be mounted to 2.5 engine") {
                 assertEquals(1, tanks.onlyMountable(engineRockomax).size)
