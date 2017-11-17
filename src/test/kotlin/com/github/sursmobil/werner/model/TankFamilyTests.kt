@@ -51,10 +51,10 @@ object TankFamilyTests : Spek({
                 assertTrue(tanks.tanks.all { it.fuelType == FuelType.LiquidFuel })
             }
             it("every tank can be mounted to 2.5 engine") {
-                assertTrue(tanks.tanks.all { it.canBeMounted(engineRockomax) })
+                assertEquals(4, tanks.getMountable(engineRockomax).size)
             }
             it("none of the tanks can be mounted to 3.75 engine") {
-                assertTrue(tanks.tanks.all { !it.canBeMounted(engineKebordyne) })
+                assertEquals(0, tanks.getMountable(engineKebordyne).size)
             }
         }
 
@@ -87,10 +87,10 @@ object TankFamilyTests : Spek({
                 assertEquals("Oscar", tanks.tanks.head.name)
             }
             it("every tank can be mounted to 2.5 engine") {
-                assertTrue(tanks.tanks.head.canBeMounted(engineRockomax))
+                assertEquals(1, tanks.getMountable(engineRockomax).size)
             }
-            it("every tank can be mounted to 1.25 engine") {
-                assertTrue(tanks.tanks.head.canBeMounted(engineKebordyne))
+            it("every tank can be mounted to 3.75 engine") {
+                assertEquals(1, tanks.getMountable(engineKebordyne).size)
             }
         }
     }
