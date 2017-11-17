@@ -1,4 +1,4 @@
-package com.github.sursmobil.werner.model.tanks
+package com.github.sursmobil.werner.data.tanks
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference

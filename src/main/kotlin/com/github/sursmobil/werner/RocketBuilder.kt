@@ -1,19 +1,18 @@
 package com.github.sursmobil.werner
 
-import com.github.sursmobil.werner.db.loadDB
+import com.github.sursmobil.werner.data.DB
 import com.github.sursmobil.werner.model.*
 import com.github.sursmobil.werner.model.Env.VAC
 import com.github.sursmobil.werner.model.Planet.KERBIN
 
-class RocketBuilder private constructor() {
+class RocketBuilder private constructor(
+        private val db: DB
+) {
     private var rockets: Collection<Rocket> = listOf(Rocket())
 
     companion object {
-        init {
-            loadDB()
-        }
-        fun rocket(f: RocketBuilder.() -> Unit): Rocket? {
-            val builder = RocketBuilder()
+        fun rocket(db: DB = DB.loadFromResources(), f: RocketBuilder.() -> Unit): Rocket? {
+            val builder = RocketBuilder(db)
             builder.f()
             return builder.rockets.minBy { it.cost }
         }
@@ -32,12 +31,12 @@ class RocketBuilder private constructor() {
         return if (maneuvers.isEmpty()) {
             listOf(stage)
         } else {
-            val added = StageCalculator(stage).addManeuver(maneuvers.head)
+            val added = StageCalculator(db, stage).addManeuver(maneuvers.head)
             added.flatMap { addManeuvers(it, maneuvers.tail) }
         }
     }
 
-    class StageBuilder internal constructor() {
+   inner class StageBuilder internal constructor() {
         var payload: Payload = Payload.create(mass = 0.0, cost = 0)
         internal val maneuvers = mutableListOf<Maneuver>()
 
@@ -48,14 +47,15 @@ class RocketBuilder private constructor() {
             maneuvers.add(maneuver)
         }
 
-        class ManeuverBuilder internal constructor() {
+        inner class ManeuverBuilder internal constructor() {
             private var planet: Planet = KERBIN
-            var deltaV: Double = -1.0
-            var env: Env = VAC
             private val restrictions = mutableListOf<ManeuverRestriction>()
 
-            fun restriction(restriction: ManeuverRestriction) {
-                restrictions.add(restriction)
+            var deltaV: Double = -1.0
+            var env: Env = VAC
+
+            fun restriction(restriction: ManeuverRestrictionFactory) {
+                restrictions.add(restriction(this@RocketBuilder.db))
             }
 
             internal fun build(): Maneuver {

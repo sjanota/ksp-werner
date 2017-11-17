@@ -1,13 +1,15 @@
 package com.github.sursmobil.werner
 
 import com.github.sursmobil.werner.model.*
-import com.github.sursmobil.werner.model.tanks.Tank
+import com.github.sursmobil.werner.data.tanks.Tank
+import com.github.sursmobil.werner.data.tanks.TanksRegistry
 
 class StageCalculator (
+        private val tanksReg: TanksRegistry,
         private val stage: Stage
 ) {
     fun addManeuver(maneuver: Maneuver): List<Stage> =
-            ManeuverExecutor(stage, maneuver).adapt()
+            ManeuverExecutor(tanksReg, stage, maneuver).adapt()
 
     fun burnTimeToDeltaV(maneuver: Maneuver): Double {
         val c1 = -maneuver.dV * stage.engine.fuelMassUsage / maneuver.env.thrust(stage)
@@ -17,11 +19,15 @@ class StageCalculator (
 }
 
 private class ManeuverExecutor(
+        private val tanksReg: TanksRegistry,
         private val stage: Stage,
         private val maneuver: Maneuver
 ) {
     private val executed = stage.addManeuver(maneuver)
     private val thrust = maneuver.env.thrust(executed)
+    private val onlyMountableTanks = tanksReg.onlyMountable(stage.engine)
+    private val orderedTanks = onlyMountableTanks.volDescending()
+    private val smallestTank = onlyMountableTanks.volSmallest()
 
     private val requiredFuel: Double
         get() {
@@ -45,13 +51,13 @@ private class ManeuverExecutor(
         return if (tanks == null) {
             executed.setUsedFuel(requiredFuel)
         } else {
-            ManeuverExecutor(stage.setTanks(tanks), maneuver)
+            ManeuverExecutor(tanksReg, stage.setTanks(tanks), maneuver)
                     .calculateFuelTanks(tolerance, maxFuel)
         }
     }
 
     private fun fillTanks(fuelToFill: Double, tolerance: Double): Tanks? {
-        val tanks = fillTanksNoExceed(fuelToFill, tolerance, Tanks.Empty, stage.engine.tankFamily.orderedTanks)
+        val tanks = fillTanksNoExceed(fuelToFill, tolerance, Tanks.Empty, orderedTanks)
         val hasEnough = fuelToFill <= tanks.vol
         return if (hasEnough) tanks else addSmallestTank(tanks)
     }
@@ -68,8 +74,8 @@ private class ManeuverExecutor(
     }
 
     private fun addSmallestTank(tanks: Tanks): Tanks? {
-        return if (stage.engine.tankFamily.smallest != null) {
-            tanks.add(stage.engine.tankFamily.smallest!!, 1)
+        return if (onlyMountableTanks.size != 0) {
+            tanks.add(smallestTank, 1)
         } else {
             null
         }
@@ -85,7 +91,7 @@ private class ManeuverExecutor(
             } else {
                 stage.engine.morph()
                         .map { stage.setEngine(it) }
-                        .map { ManeuverExecutor(it, maneuver) }
+                        .map { ManeuverExecutor(tanksReg, it, maneuver) }
                         .flatMap { it.adapt() }
             }
         }

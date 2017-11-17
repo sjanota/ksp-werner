@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.github.sursmobil.werner.data.tanks.BaseTanksRegistry
 import com.github.sursmobil.werner.head
-import com.github.sursmobil.werner.model.tanks.TanksRegistry
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
@@ -17,8 +17,8 @@ import kotlin.test.assertTrue
  * Created by sj on 16/11/2017.
  */
 
-val engineRockomax = BaseEngine("2.5", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.LiquidFuel, Thrust.None, 2.5)
-val engineKebordyne = BaseEngine("3.75", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.LiquidFuel, Thrust.None, 3.75)
+val engineRockomax = BaseEngine("2.5", 0, 0.0, 0.0, 0.0, FuelType.LiquidFuel, Thrust.None, 2.5)
+val engineKebordyne = BaseEngine("3.75", 0, 0.0, 0.0, 0.0, FuelType.LiquidFuel, Thrust.None, 3.75)
 
 object TankFamilyTests : Spek({
     given("YAML parser") {
@@ -36,7 +36,7 @@ object TankFamilyTests : Spek({
                 type: main
                 size: 2.5
             """.trimIndent()
-            val tanks = mapper.readValue<TanksRegistry>(yaml, object : TypeReference<TanksRegistry>() {})
+            val tanks = mapper.readValue<BaseTanksRegistry>(yaml, object : TypeReference<BaseTanksRegistry>() {})
 
             it("there are as many tanks as factors") {
                 assertEquals(4, tanks.tanks.size)
@@ -51,10 +51,10 @@ object TankFamilyTests : Spek({
                 assertTrue(tanks.tanks.all { it.fuelType == FuelType.LiquidFuel })
             }
             it("every tank can be mounted to 2.5 engine") {
-                assertEquals(4, tanks.getMountable(engineRockomax).size)
+                assertEquals(4, tanks.onlyMountable(engineRockomax).size)
             }
             it("none of the tanks can be mounted to 3.75 engine") {
-                assertEquals(0, tanks.getMountable(engineKebordyne).size)
+                assertEquals(0, tanks.onlyMountable(engineKebordyne).size)
             }
         }
 
@@ -69,7 +69,7 @@ object TankFamilyTests : Spek({
               mount:
                 type: radial
             """.trimIndent()
-            val tanks = mapper.readValue<TanksRegistry>(yaml, object : TypeReference<TanksRegistry>() {})
+            val tanks = mapper.readValue<BaseTanksRegistry>(yaml, object : TypeReference<BaseTanksRegistry>() {})
 
             it("there is one tank") {
                 assertEquals(1, tanks.tanks.size)
@@ -87,10 +87,10 @@ object TankFamilyTests : Spek({
                 assertEquals("Oscar", tanks.tanks.head.name)
             }
             it("every tank can be mounted to 2.5 engine") {
-                assertEquals(1, tanks.getMountable(engineRockomax).size)
+                assertEquals(1, tanks.onlyMountable(engineRockomax).size)
             }
             it("every tank can be mounted to 3.75 engine") {
-                assertEquals(1, tanks.getMountable(engineKebordyne).size)
+                assertEquals(1, tanks.onlyMountable(engineKebordyne).size)
             }
         }
     }

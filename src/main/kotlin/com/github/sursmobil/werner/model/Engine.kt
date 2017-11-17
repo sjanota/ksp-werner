@@ -9,7 +9,6 @@ abstract class Engine(
         val mass: Double,
         val fuelVolUsage: Double,
         val includedFuel: Double,
-        val tankFamily: TankFamily,
         val fuelType: FuelType,
         val thrust: Thrust,
         override val size: Double
@@ -20,7 +19,7 @@ abstract class Engine(
     override fun toString(): String =
             "Engine(name='$name')"
 
-    object None : Engine("None", 0, 0.0, 0.0, 0.0, TankFamily.None, FuelType.None, Thrust.None, 0.0) {
+    object None : Engine("None", 0, 0.0, 0.0, 0.0, FuelType.None, Thrust.None, 0.0) {
         override fun morph(): List<Engine> = Registry.engines
     }
 
@@ -32,7 +31,7 @@ abstract class Engine(
     val fuelMass: Double = includedFuel * fuelType.density
 }
 
-class BaseEngine(name: String, cost: Int, mass: Double, fuelVolUsage: Double, includedFuel: Double = 0.0, tankFamily: TankFamily, fuelType: FuelType, thrust: Thrust, size: Double) : Engine(name, cost, mass, fuelVolUsage, includedFuel, tankFamily, fuelType, thrust, size) {
+class BaseEngine(name: String, cost: Int, mass: Double, fuelVolUsage: Double, includedFuel: Double = 0.0, fuelType: FuelType, thrust: Thrust, size: Double) : Engine(name, cost, mass, fuelVolUsage, includedFuel, fuelType, thrust, size) {
     init {
         Registry.engines.add(this)
     }
